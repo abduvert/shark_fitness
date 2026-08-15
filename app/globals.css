@@ -1,0 +1,286 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light — warm parchment & ink */
+    --base: 250 246 238;
+    --surface: 244 238 227;
+    --card: 255 253 249;
+    --elevated: 255 255 255;
+    --line: 226 216 197;
+    --line-strong: 205 190 162;
+    --fg: 20 17 12;
+    --muted: 108 99 83;
+    /* Gold and faint are pulled darker than the dark-theme equivalents so
+       body text, labels and the ink-on-gold CTA all clear WCAG AA on cream. */
+    --faint: 116 107 92;
+    --gold: 133 95 12;
+    --gold-soft: 170 126 30;
+    --beige: 120 104 74;
+    --ink: 255 253 249;
+
+    --glass: 255 253 249;
+    --glass-alpha: 0.72;
+    --ring: 133 95 12;
+  }
+
+  .dark {
+    /* Dark — obsidian & gold */
+    --base: 10 9 7;
+    --surface: 16 14 11;
+    --card: 22 19 14;
+    --elevated: 28 24 17;
+    --line: 42 37 27;
+    --line-strong: 61 53 37;
+    --fg: 246 241 231;
+    --muted: 163 154 136;
+    --faint: 140 131 114;
+    --gold: 227 178 60;
+    --gold-soft: 240 208 138;
+    --beige: 232 220 198;
+    --ink: 12 10 7;
+
+    --glass: 20 17 12;
+    --glass-alpha: 0.62;
+    --ring: 227 178 60;
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-base text-fg antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Theme cross-fade without animating every child */
+  html.theme-shifting,
+  html.theme-shifting body {
+    transition: background-color 420ms ease, color 420ms ease;
+  }
+
+  ::selection {
+    background: rgb(var(--gold) / 0.28);
+    color: rgb(var(--fg));
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--ring));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgb(var(--base));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--line-strong));
+    border-radius: 99px;
+    border: 3px solid rgb(var(--base));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--gold) / 0.6);
+  }
+}
+
+@layer components {
+  .glass {
+    background: rgb(var(--glass) / var(--glass-alpha));
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+  }
+
+  .glass-strong {
+    background: rgb(var(--glass) / 0.86);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+  }
+
+  /* Thin hairline that reads on both themes */
+  .hairline {
+    box-shadow: inset 0 0 0 1px rgb(var(--line) / 0.9);
+  }
+
+  .label {
+    @apply font-display text-2xs font-semibold uppercase tracking-label text-gold;
+  }
+
+  .section {
+    @apply relative py-24 sm:py-28 lg:py-36;
+  }
+
+  .heading-xl {
+    @apply font-display font-semibold tracking-[-0.035em];
+    font-size: clamp(2.75rem, 7.5vw, 6rem);
+    line-height: 0.94;
+  }
+
+  .heading-lg {
+    @apply font-display font-semibold tracking-[-0.03em];
+    font-size: clamp(2rem, 4.6vw, 3.5rem);
+    line-height: 1.04;
+  }
+
+  .heading-md {
+    @apply font-display font-semibold tracking-[-0.02em];
+    font-size: clamp(1.375rem, 2.2vw, 1.875rem);
+    line-height: 1.15;
+  }
+
+  /* Gold text treatment used sparingly on hero words */
+  .gold-text {
+    background: linear-gradient(
+      100deg,
+      rgb(var(--gold-soft)) 0%,
+      rgb(var(--gold)) 42%,
+      rgb(var(--gold-soft)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(var(--line-strong)) 22%,
+      rgb(var(--line-strong)) 78%,
+      transparent
+    );
+  }
+
+  /* Horizontal snap rails on mobile */
+  .rail {
+    @apply flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2;
+    scrollbar-width: none;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail > * {
+    @apply snap-start shrink-0;
+  }
+
+  /* Range input — styled to match the gold system on both themes */
+  .slider {
+    @apply h-1.5 w-full cursor-pointer appearance-none rounded-full bg-transparent;
+  }
+  .slider::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 99px;
+    background: linear-gradient(
+      to right,
+      rgb(var(--gold)) var(--fill, 50%),
+      rgb(var(--line-strong)) var(--fill, 50%)
+    );
+  }
+  .slider::-moz-range-track {
+    height: 6px;
+    border-radius: 99px;
+    background: rgb(var(--line-strong));
+  }
+  .slider::-moz-range-progress {
+    height: 6px;
+    border-radius: 99px;
+    background: rgb(var(--gold));
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    margin-top: -6px;
+    border-radius: 99px;
+    background: rgb(var(--gold));
+    border: 3px solid rgb(var(--card));
+    box-shadow: 0 2px 10px rgb(var(--gold) / 0.5);
+    transition: transform 0.15s ease;
+  }
+  .slider::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 99px;
+    background: rgb(var(--gold));
+    border: 3px solid rgb(var(--card));
+    box-shadow: 0 2px 10px rgb(var(--gold) / 0.5);
+  }
+  .slider:active::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Edge-masked marquee/scroller */
+  .mask-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 5%,
+      black 95%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 5%,
+      black 95%,
+      transparent
+    );
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .grid-lines {
+    background-image: linear-gradient(
+        to right,
+        rgb(var(--line) / 0.55) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgb(var(--line) / 0.55) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
